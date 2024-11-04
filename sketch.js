@@ -10,7 +10,6 @@ function setup() {
     frameRate(10);
     resetArray();
 
-
     // Setup array size slider event
     document.getElementById('arraySize').addEventListener('input', function () {
         document.getElementById('arraySizeValue').textContent = this.value;
@@ -48,7 +47,23 @@ function updateStats(algorithm) {
     document.getElementById('comparisons').textContent = comparisons;
     document.getElementById('swaps').textContent = swaps;
 }
+// New function to set custom array from user input
+function setCustomArray() {
+    let input = document.getElementById('customArrayInput').value;
+    let customValues = input.split(',').map(Number).filter(num => !isNaN(num));
 
+    if (customValues.length > 0) {
+        values = customValues.map(v => map(v, 0, Math.max(...customValues), 50, height - 50));
+        states = new Array(values.length).fill(-1);
+        isSorting = false;
+        sorter = null;
+        comparisons = 0;
+        swaps = 0;
+        updateStats('None');
+    } else {
+        alert("Please enter valid numbers separated by commas.");
+    }
+}
 function draw() {
     background(220);
 

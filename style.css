@@ -75,3 +75,39 @@ input[type="range"] {
 canvas {
     margin-top: 10px;
 }
+
+/* Custom Array Input Container */
+.custom-array {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.custom-array label {
+    min-width: 150px;
+    font-weight: bold;
+}
+
+.custom-array input[type="text"] {
+    padding: 8px;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.custom-array button {
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.custom-array button:hover {
+    background-color: #0056b3;
+}
