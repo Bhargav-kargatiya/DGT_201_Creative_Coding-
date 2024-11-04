@@ -165,7 +165,11 @@ function* selectionSort() {
         yield;
     }
 }
-
+/*
+  10, 5, 3, 8, 2, 6, 4, 7, 9, 1  
+  j=0 i=1  key=5
+     10 
+ */
 function* insertionSort() {
     currentAlgorithm = 'Insertion Sort';
     for (let i = 1; i < values.length; i++) {
@@ -176,13 +180,13 @@ function* insertionSort() {
         comparisons++;
         while (j >= 0 && values[j] > key) {
             states[j] = 0;
-
+            comparisons++;
             values[j + 1] = values[j];
             states[j + 1] = 0;
             j--;
             yield;
         }
-
+        if (j + 1 != i) swaps++;
         values[j + 1] = key;
 
         for (let k = 0; k <= i; k++) {
@@ -190,6 +194,86 @@ function* insertionSort() {
         }
         yield;
     }
+}
+
+function* mergeSort(arr = values, left = 0, right = values.length - 1) {
+    currentAlgorithm = 'Merge Sort';
+    if (left >= right) return;
+
+    const mid = Math.floor((left + right) / 2);
+    yield* mergeSort(arr, left, mid);
+    yield* mergeSort(arr, mid + 1, right);
+    yield* merge(arr, left, mid, right);
+}
+
+function* merge(arr, left, mid, right) {
+    let n1 = mid - left + 1;
+    let n2 = right - mid;
+    let leftArr = arr.slice(left, mid + 1);
+    let rightArr = arr.slice(mid + 1, right + 1);
+
+    let i = 0, j = 0, k = left;
+
+    while (i < n1 && j < n2) {
+        states[k] = 0; // Comparison
+        comparisons++;
+
+        if (leftArr[i] <= rightArr[j]) {
+            arr[k] = leftArr[i++];
+        } else {
+            arr[k] = rightArr[j++];
+        }
+        k++;
+        yield;
+    }
+
+    while (i < n1) {
+        arr[k] = leftArr[i++];
+        k++;
+        yield;
+    }
+
+    while (j < n2) {
+        arr[k] = rightArr[j++];
+        k++;
+        yield;
+    }
+
+    for (let l = left; l <= right; l++) {
+        states[l] = 1; // Sorted state
+    }
+}
+
+// Quick Sort generator function
+function* quickSort(arr = values, low = 0, high = values.length - 1) {
+    currentAlgorithm = 'Quick Sort';
+    if (low < high) {
+        let pivotIdx = yield* partition(arr, low, high);
+        yield* quickSort(arr, low, pivotIdx - 1);
+        yield* quickSort(arr, pivotIdx + 1, high);
+    }
+}
+
+function* partition(arr, low, high) {
+    let pivot = arr[high];
+    let i = low - 1;
+
+    for (let j = low; j < high; j++) {
+        states[j] = 0; // Active comparison
+        comparisons++;
+
+        if (arr[j] < pivot) {
+            i++;
+            swap(arr, i, j);
+            yield;
+        }
+        states[j] = -1;
+    }
+    swap(arr, i + 1, high);
+    yield;
+    states[high] = 1; // Pivot sorted
+
+    return i + 1;
 }
 
 function startSorting(algorithm) {
@@ -209,6 +293,12 @@ function startSorting(algorithm) {
             break;
         case 'insertion':
             sorter = insertionSort();
+            break;
+        case 'merge':
+            sorter = mergeSort();
+            break;
+        case 'quick':
+            sorter = quickSort();
             break;
     }
 }
