@@ -10,6 +10,7 @@ function setup() {
     frameRate(10);
     resetArray();
 
+
     // Setup array size slider event
     document.getElementById('arraySize').addEventListener('input', function () {
         document.getElementById('arraySizeValue').textContent = this.value;
