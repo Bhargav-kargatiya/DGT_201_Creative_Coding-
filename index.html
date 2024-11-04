@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script src="sketch.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+    <div class="controls">
+        <div class="sliders">
+            <div class="slider-container">
+                <label for="arraySize">Array Size:</label>
+                <input type="range" id="arraySize" min="10" max="100" value="50" step="5">
+                <span id="arraySizeValue">50</span>
+            </div>
+            <div class="slider-container">
+                <label for="speedSlider">Speed:</label>
+                <input type="range" id="speedSlider" min="1" max="50" value="10">
+                <span id="speedValue">10</span>
+            </div>
+        </div>
+        <div class="buttons">
+            <button onclick="resetArray()">Generate New Array</button>
+            <button onclick="startSorting('bubble')">Bubble Sort</button>
+            <button onclick="startSorting('selection')">Selection Sort</button>
+            <button onclick="startSorting('insertion')">Insertion Sort</button>
+        </div>
+        <div class="stats">
+            <p>Algorithm: <span id="currentAlgorithm">None</span></p>
+            <p>Comparisons: <span id="comparisons">0</span></p>
+            <p>Swaps: <span id="swaps">0</span></p>
+        </div>
+    </div>
+</body>
+
+</html>
