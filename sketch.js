@@ -5,9 +5,10 @@ let isSorting = false;
 let comparisons = 0;
 let swaps = 0;
 let isPaused = false;
+let lastStepTime = 0;
 function setup() {
     createCanvas(800, 400);
-    frameRate(3);
+    frameRate(30);
     resetArray();
 
     // Setup array size slider event
@@ -69,6 +70,10 @@ function setCustomArray() {
         alert("Please enter valid numbers separated by commas.");
     }
 }
+function getDelayInterval() {
+    let speedValue = parseInt(document.getElementById('speedSlider').value);
+    return map(speedValue, 1, 50, 300, 0);  // Map speed to delay (500ms - slow, 10ms - fast)
+}
 function draw() {
     background(220);
 
@@ -93,14 +98,23 @@ function draw() {
 
     // Continue sorting if active
     if (isSorting && sorter && !isPaused) {
-        for (let i = 0; i < getSpeed(); i++) {
+        // for (let i = 0; i < getSpeed(); i++) {
+        //     let result = sorter.next();
+        //     if (result.done) {
+        //         isSorting = false;
+        //         markAllAsSorted();
+        //     }
+        // }
+        // updateStats(currentAlgorithm);
+        if (millis() - lastStepTime >= getDelayInterval()) {
             let result = sorter.next();
             if (result.done) {
                 isSorting = false;
                 markAllAsSorted();
             }
+            lastStepTime = millis();  // Update the last step time
+            updateStats(currentAlgorithm);
         }
-        updateStats(currentAlgorithm);
     }
 }
 
@@ -265,8 +279,10 @@ function* partition(arr, low, high) {
 
         if (arr[j] < pivot) {
             i++;
+            states[i] = 0;
             swap(arr, i, j);
             yield;
+            states[i] = -1;
         }
         states[j] = -1;
     }
