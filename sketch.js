@@ -4,10 +4,10 @@ let sorter = null;
 let isSorting = false;
 let comparisons = 0;
 let swaps = 0;
-
+let isPaused = false;
 function setup() {
     createCanvas(800, 400);
-    frameRate(10);
+    frameRate(3);
     resetArray();
 
     // Setup array size slider event
@@ -40,6 +40,11 @@ function resetArray() {
         values.push(random(50, height - 50));
         states.push(-1);
     }
+}
+
+function togglePause() {
+    isPaused = !isPaused;
+    document.getElementById("pauseResumeButton").textContent = isPaused ? "▶️" : "⏸";
 }
 
 function updateStats(algorithm) {
@@ -87,7 +92,7 @@ function draw() {
     }
 
     // Continue sorting if active
-    if (isSorting && sorter) {
+    if (isSorting && sorter && !isPaused) {
         for (let i = 0; i < getSpeed(); i++) {
             let result = sorter.next();
             if (result.done) {
@@ -165,11 +170,7 @@ function* selectionSort() {
         yield;
     }
 }
-/*
-  10, 5, 3, 8, 2, 6, 4, 7, 9, 1  
-  j=0 i=1  key=5
-     10 
- */
+
 function* insertionSort() {
     currentAlgorithm = 'Insertion Sort';
     for (let i = 1; i < values.length; i++) {
@@ -257,7 +258,7 @@ function* quickSort(arr = values, low = 0, high = values.length - 1) {
 function* partition(arr, low, high) {
     let pivot = arr[high];
     let i = low - 1;
-
+    states[high] = 2;
     for (let j = low; j < high; j++) {
         states[j] = 0; // Active comparison
         comparisons++;
@@ -270,9 +271,9 @@ function* partition(arr, low, high) {
         states[j] = -1;
     }
     swap(arr, i + 1, high);
+    states[high] = -1;
+    states[i + 1] = 1; // Pivot sorted
     yield;
-    states[high] = 1; // Pivot sorted
-
     return i + 1;
 }
 
